@@ -68,7 +68,13 @@ def imread(filename):
     """
     Loads an image file into a (height, width, 3) uint8 ndarray.
     """
-    return np.asarray(Image.open(filename), dtype=np.uint8)[..., :3]
+    # Modified by D. Fiorino to support also grayscale images
+    x0 = np.asarray(Image.open(filename), dtype=np.uint8)
+
+    if (x0.ndim == 2):
+      return np.stack((x0,x0, x0), axis=2)
+    else:
+      return x0[..., :3]
 
 
 def get_activations(files, model, batch_size=50, dims=2048, cuda=False):
